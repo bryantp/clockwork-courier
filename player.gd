@@ -1,0 +1,37 @@
+extends CharacterBody2D
+
+
+const SPEED = 500.0
+const JUMP_VELOCITY = -400.0
+
+@onready var state_machine = $"../StateMachine"
+@onready var model_root = $SubViewportContainer/SubViewport/Node3D/robot
+@onready var animation_player = model_root.get_node("AnimationPlayer")
+@onready var camera = %Camera2D
+
+func _ready():
+	for state in state_machine.get_children():
+		state.player = self
+
+func _physics_process(delta: float) -> void:
+	state_machine._physics_update(delta)
+	# Add the gravity.
+	if not is_on_floor():
+		velocity += get_gravity() * delta
+		camera.set_zoom(Vector2(.9,.9))
+	else:
+		camera.set_zoom(Vector2(1,1))
+
+	# Handle jump.
+	if Input.is_action_just_pressed("ui_accept") and is_on_floor():
+		velocity.y = JUMP_VELOCITY
+
+	# Get the input direction and handle the movement/deceleration.
+	# As good practice, you should replace UI actions with custom gameplay actions.
+	var direction := Input.get_axis("ui_left", "ui_right")
+	if direction:
+		velocity.x = direction * SPEED
+	else:
+		velocity.x = move_toward(velocity.x, 0, SPEED)
+
+	move_and_slide()
