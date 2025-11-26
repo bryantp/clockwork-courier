@@ -1,0 +1,84 @@
+[gd_scene load_steps=8 format=3 uid="uid://dl53o70osyxvw"]
+
+[ext_resource type="Script" uid="uid://daiko4mlgawfi" path="res://scenes/vertical_platform/scripts/vertical_platform.gd" id="1_vrhkc"]
+[ext_resource type="Script" uid="uid://dll6y72ost2sx" path="res://scenes/vertical_platform/scripts/moving_platform.gd" id="1_xqbco"]
+[ext_resource type="Texture2D" uid="uid://bns1rb5k3imks" path="res://assets/tiles/0x72_16x16RobotTileset.v1.png" id="2_vrhkc"]
+[ext_resource type="Script" uid="uid://bv7p13viwxlrd" path="res://scenes/vertical_platform/scripts/bottom_spawner_label.gd" id="3_6r3mj"]
+[ext_resource type="Script" uid="uid://cbh2xt323ulee" path="res://scenes/vertical_platform/top_spawner_area.gd" id="3_r4jgu"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_atdh0"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_b26j0"]
+size = Vector2(33, 16)
+
+[node name="VerticalPlatformSpawner" type="Node2D"]
+script = ExtResource("1_vrhkc")
+
+[node name="TopSpawner" type="Marker2D" parent="."]
+unique_name_in_owner = true
+position = Vector2(0, -169)
+gizmo_extents = 25.0
+
+[node name="TopSpawnerLabel" type="Label" parent="TopSpawner"]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -78.5
+offset_top = -23.0
+offset_right = 78.5
+grow_horizontal = 2
+grow_vertical = 0
+size_flags_horizontal = 6
+size_flags_vertical = 6
+text = "Top Platform Spawn"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TopSpawnerArea" type="Area2D" parent="TopSpawner"]
+script = ExtResource("3_r4jgu")
+
+[node name="TopSpawnerCollisionShape" type="CollisionShape2D" parent="TopSpawner/TopSpawnerArea"]
+shape = SubResource("CircleShape2D_atdh0")
+
+[node name="BottomSpawner" type="Marker2D" parent="."]
+unique_name_in_owner = true
+position = Vector2(2, 1305)
+gizmo_extents = 25.0
+
+[node name="BottomSpawnerLabel" type="Label" parent="BottomSpawner"]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -93.0
+offset_top = -23.0
+offset_right = 93.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "Bottom Platform Spawn"
+script = ExtResource("3_6r3mj")
+
+[node name="BottomSpawnerArea" type="Area2D" parent="BottomSpawner"]
+
+[node name="BottomSpawnerCollisionShape" type="CollisionShape2D" parent="BottomSpawner/BottomSpawnerArea"]
+shape = SubResource("CircleShape2D_atdh0")
+
+[node name="VerticalMovingPlatform" type="AnimatableBody2D" parent="." groups=["self_cleanup"]]
+unique_name_in_owner = true
+script = ExtResource("1_xqbco")
+
+[node name="Sprite2D" type="Sprite2D" parent="VerticalMovingPlatform"]
+rotation = -3.1415927
+scale = Vector2(1, -1)
+texture = ExtResource("2_vrhkc")
+region_enabled = true
+region_rect = Rect2(111.81426, 79.97345, 32.91639, 16.079742)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="VerticalMovingPlatform"]
+shape = SubResource("RectangleShape2D_b26j0")
+
+[connection signal="body_entered" from="TopSpawner/TopSpawnerArea" to="." method="_on_top_spawner_area_body_entered"]
+[connection signal="body_entered" from="BottomSpawner/BottomSpawnerArea" to="." method="_on_bottom_spawner_area_body_entered"]
