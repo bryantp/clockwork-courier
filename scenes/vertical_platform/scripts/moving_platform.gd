@@ -11,5 +11,8 @@ func _physics_process(delta: float) -> void:
 func set_speed(speed: int) -> void:
 	_speed = speed
 	
+func get_direction() -> int:
+	return _direction
+	
 func reverse_direction() -> void:
 	_direction = -_direction

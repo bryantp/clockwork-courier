@@ -15,7 +15,7 @@ var reversed = false
 var init_distance_between_platforms = 100
 
 func _ready() -> void:
-	#_create_platform_spawn_timer()
+	_create_platform_spawn_timer()
 
 	platforms[platform.get_instance_id()] = platform
 
@@ -30,7 +30,7 @@ func _ready() -> void:
 		and the Y value is relative to the spawner.
 		"""
 		new_platform.position = Vector2(0, local_y)
-		new_platform.set_speed(0)
+		new_platform.set_speed(speed)
 		bottom_spawner.add_child(new_platform)
 		platforms[new_platform.get_instance_id()] = new_platform
 
@@ -47,10 +47,16 @@ func _on_spawn_platform() -> void:
 	var new_platform = platform.duplicate()
 	new_platform.position = platform_start_pos
 	new_platform.set_speed(speed)
+	
+	if reversed:
+		new_platform.reverse_direction()
+	
 	platforms.set(new_platform.get_instance_id(), new_platform)
 	if reversed:
+		print("Spawning Platform from top at %s and direction %s" % [new_platform.global_position, new_platform.get_direction()])
 		top_spawner.add_child(new_platform)
 	else:
+		print("Spawning Platform from bottom at %s and direction %s" % [new_platform.global_position, new_platform.get_direction()])
 		bottom_spawner.add_child(new_platform)
 
 func _on_top_spawner_area_body_entered(body: Node2D) -> void:
